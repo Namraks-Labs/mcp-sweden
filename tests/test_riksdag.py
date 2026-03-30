@@ -6,8 +6,6 @@ Use sparingly in CI — mark with @pytest.mark.integration if needed.
 
 from __future__ import annotations
 
-import pytest
-
 from mcp_sweden.data.riksdag import client, tools
 
 

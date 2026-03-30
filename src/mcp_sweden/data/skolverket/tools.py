@@ -125,9 +125,11 @@ async def find_schools_in_municipality(municipality_code: str) -> str:
     """
     items = await client.search_school_units_registry(municipality_code)
     active = [s for s in items if s.get("Status") == "Aktiv"]
-    return _fmt({
-        "municipality_code": municipality_code,
-        "total": len(items),
-        "active": len(active),
-        "schools": items[:100],  # Cap to avoid huge responses
-    })
+    return _fmt(
+        {
+            "municipality_code": municipality_code,
+            "total": len(items),
+            "active": len(active),
+            "schools": items[:100],  # Cap to avoid huge responses
+        }
+    )

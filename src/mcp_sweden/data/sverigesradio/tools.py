@@ -90,13 +90,15 @@ async def get_schedule(
         results.append(entry)
 
     pagination = data.get("pagination", {})
-    return _json({
-        "channel_id": channel_id,
-        "date": date or "today",
-        "total": pagination.get("totalhits", len(results)),
-        "page": pagination.get("page", page),
-        "schedule": results,
-    })
+    return _json(
+        {
+            "channel_id": channel_id,
+            "date": date or "today",
+            "total": pagination.get("totalhits", len(results)),
+            "page": pagination.get("page", page),
+            "schedule": results,
+        }
+    )
 
 
 # ---------------------------------------------------------------------------
@@ -148,11 +150,13 @@ async def search_programs(
         results.append(entry)
 
     pagination = data.get("pagination", {})
-    return _json({
-        "total": pagination.get("totalhits", len(results)),
-        "page": pagination.get("page", page),
-        "programs": results,
-    })
+    return _json(
+        {
+            "total": pagination.get("totalhits", len(results)),
+            "page": pagination.get("page", page),
+            "programs": results,
+        }
+    )
 
 
 async def get_episodes(
@@ -195,12 +199,14 @@ async def get_episodes(
         results.append(entry)
 
     pagination = data.get("pagination", {})
-    return _json({
-        "program_id": program_id,
-        "total": pagination.get("totalhits", len(results)),
-        "page": pagination.get("page", page),
-        "episodes": results,
-    })
+    return _json(
+        {
+            "program_id": program_id,
+            "total": pagination.get("totalhits", len(results)),
+            "page": pagination.get("page", page),
+            "episodes": results,
+        }
+    )
 
 
 async def get_latest_episode(program_id: int) -> str:
@@ -256,13 +262,15 @@ async def get_playlist(channel_id: int, size: int = 10) -> str:
 
     results = []
     for s in songs:
-        results.append({
-            "title": s.get("title", ""),
-            "artist": s.get("artist", ""),
-            "album": s.get("albumname", ""),
-            "start_time": s.get("starttimeutc", ""),
-            "stop_time": s.get("stoptimeutc", ""),
-        })
+        results.append(
+            {
+                "title": s.get("title", ""),
+                "artist": s.get("artist", ""),
+                "album": s.get("albumname", ""),
+                "start_time": s.get("starttimeutc", ""),
+                "stop_time": s.get("stoptimeutc", ""),
+            }
+        )
 
     return _json({"channel_id": channel_id, "songs": results})
 
@@ -363,12 +371,14 @@ async def get_traffic_messages(
         results.append(entry)
 
     pagination = data.get("pagination", {})
-    return _json({
-        "area": area or "nationwide",
-        "total": pagination.get("totalhits", len(results)),
-        "page": pagination.get("page", page),
-        "messages": results,
-    })
+    return _json(
+        {
+            "area": area or "nationwide",
+            "total": pagination.get("totalhits", len(results)),
+            "page": pagination.get("page", page),
+            "messages": results,
+        }
+    )
 
 
 async def list_traffic_areas() -> str:

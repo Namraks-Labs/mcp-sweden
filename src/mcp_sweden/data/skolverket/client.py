@@ -86,9 +86,7 @@ async def search_school_units_planned(
     if type_of_schooling:
         params["typeOfSchooling"] = type_of_schooling
 
-    data = await http_get(
-        f"{PLANNED_BASE}/school-units", params=params, headers=_PLANNED_HEADERS
-    )
+    data = await http_get(f"{PLANNED_BASE}/school-units", params=params, headers=_PLANNED_HEADERS)
     body = data.get("body", {})
     embedded = body.get("_embedded", {})
     return {
@@ -99,9 +97,7 @@ async def search_school_units_planned(
 
 async def get_school_unit_planned(school_code: str) -> dict[str, Any]:
     """Get school unit details from the planned-educations API."""
-    data = await http_get(
-        f"{PLANNED_BASE}/school-units/{school_code}", headers=_PLANNED_HEADERS
-    )
+    data = await http_get(f"{PLANNED_BASE}/school-units/{school_code}", headers=_PLANNED_HEADERS)
     return data.get("body", data)  # type: ignore[no-any-return]
 
 

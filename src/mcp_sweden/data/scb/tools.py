@@ -72,8 +72,10 @@ async def scb_browse(path: str) -> str:
         lines.append("")
 
     if tables:
-        lines.append("Use scb_table_info with the full path (e.g. path + '/' + table_id) "
-                      "to see variables and available values.")
+        lines.append(
+            "Use scb_table_info with the full path (e.g. path + '/' + table_id) "
+            "to see variables and available values."
+        )
     if folders:
         lines.append("Use scb_browse with a deeper path to explore further.")
 
@@ -96,8 +98,10 @@ async def scb_table_info(table_path: str) -> str:
     metadata = await client.get_table_metadata(table_path)
 
     if not metadata.title and not metadata.variables:
-        return (f"No metadata found for '{table_path}'. "
-                "This might be a folder — use scb_browse instead.")
+        return (
+            f"No metadata found for '{table_path}'. "
+            "This might be a folder — use scb_browse instead."
+        )
 
     lines = [f"Table: {metadata.title}", f"Path: {table_path}", ""]
     lines.append("Variables:")
@@ -159,9 +163,11 @@ async def scb_query(
     )
 
     if not response.columns and not response.data:
-        return (f"No data returned for '{table_path}'. "
-                "Check the path and selections. Use scb_table_info to see "
-                "available variables and values.")
+        return (
+            f"No data returned for '{table_path}'. "
+            "Check the path and selections. Use scb_table_info to see "
+            "available variables and values."
+        )
 
     # Build header
     col_names = [c.text for c in response.columns]
@@ -179,8 +185,10 @@ async def scb_query(
     result_lines.extend(lines)
 
     if total_rows > max_rows:
-        result_lines.append(f"\n... showing {max_rows} of {total_rows} rows. "
-                            "Narrow your selections to see fewer results.")
+        result_lines.append(
+            f"\n... showing {max_rows} of {total_rows} rows. "
+            "Narrow your selections to see fewer results."
+        )
 
     # Add any comments
     if response.comments:

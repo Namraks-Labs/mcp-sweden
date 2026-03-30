@@ -106,10 +106,7 @@ async def get_tradera_item(item_id: str) -> str:
         JSON with full listing details.
     """
     if not client.is_tradera_available():
-        return (
-            "Tradera unavailable — set TRADERA_APP_ID and "
-            "TRADERA_APP_KEY environment variables."
-        )
+        return "Tradera unavailable — set TRADERA_APP_ID and TRADERA_APP_KEY environment variables."
 
     item = await client.get_tradera_item(item_id)
     return _json(item)
