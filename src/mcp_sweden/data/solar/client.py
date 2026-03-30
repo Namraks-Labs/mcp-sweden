@@ -38,9 +38,7 @@ def _normalize(name: str) -> str:
     return "".join(ch for ch in nfd if unicodedata.category(ch) != "Mn")
 
 
-_NORMALIZED_MUNICIPALITIES: dict[str, str] = {
-    _normalize(k): k for k in MUNICIPALITY_DATA
-}
+_NORMALIZED_MUNICIPALITIES: dict[str, str] = {_normalize(k): k for k in MUNICIPALITY_DATA}
 
 
 def resolve_municipality(name: str) -> str | None:
@@ -79,10 +77,7 @@ def get_installation_data(municipality_name: str) -> list[dict[str, Any]]:
     canonical = resolve_municipality(municipality_name)
     if canonical is None:
         return []
-    rows = [
-        r for r in SAMPLE_INSTALLATIONS
-        if r["municipality"] == canonical
-    ]
+    rows = [r for r in SAMPLE_INSTALLATIONS if r["municipality"] == canonical]
     return sorted(rows, key=lambda r: int(str(r["year"])))
 
 
@@ -189,21 +184,21 @@ async def fetch_smhi_forecast(lat: float, lon: float) -> list[dict[str, Any]]:
         except ValueError:
             continue
 
-        records.append({
-            "valid_time": valid_time.isoformat(),
-            "valid_hour": valid_time.hour,
-            "wsymb2": wsymb2,
-            "weather": WSYMB2_DESCRIPTIONS.get(wsymb2, f"Unknown ({wsymb2})"),
-            "temperature": temp,
-            "clearness": round(clearness, 3),
-        })
+        records.append(
+            {
+                "valid_time": valid_time.isoformat(),
+                "valid_hour": valid_time.hour,
+                "wsymb2": wsymb2,
+                "weather": WSYMB2_DESCRIPTIONS.get(wsymb2, f"Unknown ({wsymb2})"),
+                "temperature": temp,
+                "clearness": round(clearness, 3),
+            }
+        )
 
     return records
 
 
-async def get_average_clearness(
-    lat: float, lon: float, days_ahead: int = 7
-) -> tuple[float, str]:
+async def get_average_clearness(lat: float, lon: float, days_ahead: int = 7) -> tuple[float, str]:
     """Return (average_clearness, dominant_weather_description) over next N days.
 
     Only daytime hours (06-20 UTC) are considered.

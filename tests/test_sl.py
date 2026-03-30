@@ -4,8 +4,7 @@ from __future__ import annotations
 
 import pytest
 
-from mcp_sweden.data.sl import FEATURE_META
-from mcp_sweden.data.sl import client
+from mcp_sweden.data.sl import FEATURE_META, client
 
 
 class TestFeatureMeta:

@@ -93,7 +93,7 @@ class CompanySearchResult(BaseModel):
             return f'No companies found for "{self.query}".'
         header = f'Found {self.total_count} companies for "{self.query}" (page {self.page}):\n'
         items = [
-            f"{i+1}. {c.name} ({c.org_number}) — {c.company_type}"
+            f"{i + 1}. {c.name} ({c.org_number}) — {c.company_type}"
             for i, c in enumerate(self.companies)
         ]
         return header + "\n".join(items)

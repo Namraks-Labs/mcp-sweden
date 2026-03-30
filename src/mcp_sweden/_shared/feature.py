@@ -102,9 +102,7 @@ class FeatureRegistry:
         """Discover all features in the package."""
         package = importlib.import_module(package_name)
 
-        for _finder, name, ispkg in pkgutil.iter_modules(
-            package.__path__, package.__name__ + "."
-        ):
+        for _finder, name, ispkg in pkgutil.iter_modules(package.__path__, package.__name__ + "."):
             short_name = name.rsplit(".", 1)[-1]
 
             if not ispkg or short_name.startswith("_"):
@@ -165,8 +163,7 @@ class FeatureRegistry:
     def summary(self) -> str:
         """Return a human-readable summary of registered features."""
         lines = [
-            f"mcp-sweden — {len(self._features)} feature(s) active, "
-            f"{len(self._skipped)} skipped\n"
+            f"mcp-sweden — {len(self._features)} feature(s) active, {len(self._skipped)} skipped\n"
         ]
 
         if self._features:

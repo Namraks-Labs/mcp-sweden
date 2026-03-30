@@ -122,11 +122,13 @@ async def solar_growth(municipality: str) -> dict[str, Any]:
         prev_cap = float(str(rows[i - 1]["capacity_kw"]))
         curr_cap = float(str(rows[i]["capacity_kw"]))
         pct = round((curr_cap - prev_cap) / prev_cap * 100, 1) if prev_cap > 0 else None
-        yoy.append({
-            "year": rows[i]["year"],
-            "capacity_kw": curr_cap,
-            "growth_pct": pct,
-        })
+        yoy.append(
+            {
+                "year": rows[i]["year"],
+                "capacity_kw": curr_cap,
+                "growth_pct": pct,
+            }
+        )
 
     # CAGR
     cagr: float | None = None
@@ -354,12 +356,18 @@ async def solar_revenue(
 
     # Weather forecast
     clearness, weather = await get_average_clearness(
-        lat, lon, max(1, days_ahead),
+        lat,
+        lon,
+        max(1, days_ahead),
     )
 
     # Generation estimates
     forecast_kwh = expected_energy_kwh(
-        capacity_kw, clearness, lat, max(1, days_ahead), delivery_date,
+        capacity_kw,
+        clearness,
+        lat,
+        max(1, days_ahead),
+        delivery_date,
     )
     clear_kwh = clear_sky_energy_kwh(capacity_kw, lat, max(1, days_ahead), delivery_date)
 

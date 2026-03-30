@@ -107,9 +107,7 @@ class PlannedSchoolUnit(BaseModel):
     name: str
     municipality_code: str = Field(alias="geographicalAreaCode")
     post_code_district: str | None = Field(None, alias="postCodeDistrict")
-    type_of_schooling: list[SchoolingType] = Field(
-        default_factory=list, alias="typeOfSchooling"
-    )
+    type_of_schooling: list[SchoolingType] = Field(default_factory=list, alias="typeOfSchooling")
     students_per_teacher: str | None = Field(None, alias="studentsPerTeacherQuota")
     principal_type: str | None = Field(None, alias="principalOrganizerType")
 

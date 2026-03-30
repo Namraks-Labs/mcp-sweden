@@ -133,9 +133,7 @@ async def query_table(
                 query_vars.append(
                     QueryVariable(
                         code=time_var.code,
-                        selection=VariableSelection(
-                            filter="top", values=[str(top_n)]
-                        ),
+                        selection=VariableSelection(filter="top", values=[str(top_n)]),
                     )
                 )
 

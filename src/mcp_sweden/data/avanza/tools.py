@@ -262,7 +262,7 @@ async def get_price_chart(
         if len(ohlc) > 10:
             result["first_point"] = ohlc[0]
             result["last_point"] = ohlc[-1]
-            result["sample_points"] = ohlc[::max(1, len(ohlc) // 10)]
+            result["sample_points"] = ohlc[:: max(1, len(ohlc) // 10)]
         else:
             result["data_points"] = ohlc
     elif data_points:
@@ -270,7 +270,7 @@ async def get_price_chart(
         if len(data_points) > 10:
             result["first_point"] = data_points[0]
             result["last_point"] = data_points[-1]
-            result["sample_points"] = data_points[::max(1, len(data_points) // 10)]
+            result["sample_points"] = data_points[:: max(1, len(data_points) // 10)]
         else:
             result["data_points"] = data_points
 

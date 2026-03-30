@@ -8,7 +8,6 @@ import pytest
 
 from mcp_sweden.data.begagnad import FEATURE_META
 from mcp_sweden.data.begagnad.client import (
-    _element_to_dict,
     _parse_xml_to_dict,
     is_tradera_available,
 )
@@ -68,6 +67,7 @@ class TestSearchBlocket:
     @pytest.fixture(autouse=True)
     def _clear_cache(self) -> None:
         from mcp_sweden.data.begagnad.client import search_blocket as fn
+
         if hasattr(fn, "cache"):
             fn.cache.clear()
 
@@ -121,13 +121,16 @@ class TestSearchTradera:
                 "source": "tradera",
             }
         ]
-        with patch(
-            "mcp_sweden.data.begagnad.client.is_tradera_available",
-            return_value=True,
-        ), patch(
-            "mcp_sweden.data.begagnad.client.search_tradera",
-            new_callable=AsyncMock,
-            return_value=mock_items,
+        with (
+            patch(
+                "mcp_sweden.data.begagnad.client.is_tradera_available",
+                return_value=True,
+            ),
+            patch(
+                "mcp_sweden.data.begagnad.client.search_tradera",
+                new_callable=AsyncMock,
+                return_value=mock_items,
+            ),
         ):
             result = await search_tradera("test")
             assert '"count": 1' in result
@@ -138,6 +141,7 @@ class TestSearchBegagnad:
     @pytest.fixture(autouse=True)
     def _clear_cache(self) -> None:
         from mcp_sweden.data.begagnad.client import search_blocket as fn
+
         if hasattr(fn, "cache"):
             fn.cache.clear()
 
@@ -146,17 +150,21 @@ class TestSearchBegagnad:
         blocket_items = [{"id": "1", "title": "Blocket item", "source": "blocket"}]
         tradera_items = [{"id": "2", "title": "Tradera item", "source": "tradera"}]
 
-        with patch(
-            "mcp_sweden.data.begagnad.client.search_blocket",
-            new_callable=AsyncMock,
-            return_value=blocket_items,
-        ), patch(
-            "mcp_sweden.data.begagnad.client.is_tradera_available",
-            return_value=True,
-        ), patch(
-            "mcp_sweden.data.begagnad.client.search_tradera",
-            new_callable=AsyncMock,
-            return_value=tradera_items,
+        with (
+            patch(
+                "mcp_sweden.data.begagnad.client.search_blocket",
+                new_callable=AsyncMock,
+                return_value=blocket_items,
+            ),
+            patch(
+                "mcp_sweden.data.begagnad.client.is_tradera_available",
+                return_value=True,
+            ),
+            patch(
+                "mcp_sweden.data.begagnad.client.search_tradera",
+                new_callable=AsyncMock,
+                return_value=tradera_items,
+            ),
         ):
             result = await search_begagnad("test")
             assert '"total": 2' in result
@@ -167,13 +175,16 @@ class TestSearchBegagnad:
     async def test_blocket_only_when_tradera_unavailable(self) -> None:
         blocket_items = [{"id": "1", "title": "Item", "source": "blocket"}]
 
-        with patch(
-            "mcp_sweden.data.begagnad.client.search_blocket",
-            new_callable=AsyncMock,
-            return_value=blocket_items,
-        ), patch(
-            "mcp_sweden.data.begagnad.client.is_tradera_available",
-            return_value=False,
+        with (
+            patch(
+                "mcp_sweden.data.begagnad.client.search_blocket",
+                new_callable=AsyncMock,
+                return_value=blocket_items,
+            ),
+            patch(
+                "mcp_sweden.data.begagnad.client.is_tradera_available",
+                return_value=False,
+            ),
         ):
             result = await search_begagnad("test")
             assert '"total": 1' in result
@@ -185,6 +196,7 @@ class TestGetBlocketItem:
     @pytest.fixture(autouse=True)
     def _clear_cache(self) -> None:
         from mcp_sweden.data.begagnad.client import get_blocket_item as fn
+
         if hasattr(fn, "cache"):
             fn.cache.clear()
 

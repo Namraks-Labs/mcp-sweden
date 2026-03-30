@@ -61,25 +61,25 @@ async def search_blocket(query: str, limit: int = 20) -> list[dict[str, Any]]:
                         condition = param.get("short_value")
                         break
 
-        results.append({
-            "id": str(item.get("ad_id", item.get("list_id", ""))),
-            "title": item.get("subject", ""),
-            "description": item.get("body", ""),
-            "price": price_obj.get("value") if isinstance(price_obj, dict) else None,
-            "currency": "SEK",
-            "location": location_list[0].get("name", "") if location_list else "",
-            "url": item.get("share_url", ""),
-            "images": [
-                img.get("url", "") for img in item.get("images", []) if img.get("url")
-            ],
-            "condition": condition,
-            "seller_name": advertiser.get("name", ""),
-            "seller_rating": (
-                advertiser.get("public_profile", {}).get("reviews", {}).get("overall_score")
-            ),
-            "end_date": item.get("list_time"),
-            "source": "blocket",
-        })
+        results.append(
+            {
+                "id": str(item.get("ad_id", item.get("list_id", ""))),
+                "title": item.get("subject", ""),
+                "description": item.get("body", ""),
+                "price": price_obj.get("value") if isinstance(price_obj, dict) else None,
+                "currency": "SEK",
+                "location": location_list[0].get("name", "") if location_list else "",
+                "url": item.get("share_url", ""),
+                "images": [img.get("url", "") for img in item.get("images", []) if img.get("url")],
+                "condition": condition,
+                "seller_name": advertiser.get("name", ""),
+                "seller_rating": (
+                    advertiser.get("public_profile", {}).get("reviews", {}).get("overall_score")
+                ),
+                "end_date": item.get("list_time"),
+                "source": "blocket",
+            }
+        )
     return results
 
 
@@ -119,9 +119,7 @@ async def get_blocket_item(ad_id: str) -> dict[str, Any]:
         "currency": "SEK",
         "location": location_list[0].get("name", "") if location_list else "",
         "url": item.get("share_url", ""),
-        "images": [
-            img.get("url", "") for img in item.get("images", []) if img.get("url")
-        ],
+        "images": [img.get("url", "") for img in item.get("images", []) if img.get("url")],
         "condition": condition,
         "seller_name": advertiser.get("name", ""),
         "seller_rating": (
@@ -204,9 +202,7 @@ async def search_tradera(query: str, page: int = 1) -> list[dict[str, Any]]:
             },
         )
         if resp.status_code >= 400:
-            raise HttpClientError(
-                f"{TRADERA_API}/searchservice.asmx/Search", resp.status_code
-            )
+            raise HttpClientError(f"{TRADERA_API}/searchservice.asmx/Search", resp.status_code)
 
     parsed = _parse_xml_to_dict(resp.text)
     items_raw = parsed.get("Items", {})
@@ -234,32 +230,28 @@ async def search_tradera(query: str, page: int = 1) -> list[dict[str, Any]]:
             if isinstance(link, dict) and link.get("Format") == "normal" and link.get("Url")
         ]
 
-        price = (
-            item.get("BuyItNowPrice")
-            or item.get("MaxBid")
-            or item.get("NextBid")
-        )
+        price = item.get("BuyItNowPrice") or item.get("MaxBid") or item.get("NextBid")
 
-        results.append({
-            "id": str(item.get("Id", "")),
-            "title": item.get("ShortDescription", ""),
-            "description": item.get("LongDescription", ""),
-            "price": float(price) if price else None,
-            "currency": "SEK",
-            "location": "",
-            "url": item.get("ItemUrl", ""),
-            "images": images,
-            "condition": None,
-            "seller_name": item.get("SellerAlias", ""),
-            "seller_rating": (
-                float(item["SellerDsrAverage"])
-                if item.get("SellerDsrAverage")
-                else None
-            ),
-            "end_date": item.get("EndDate"),
-            "source": "tradera",
-            "item_type": item.get("ItemType"),
-        })
+        results.append(
+            {
+                "id": str(item.get("Id", "")),
+                "title": item.get("ShortDescription", ""),
+                "description": item.get("LongDescription", ""),
+                "price": float(price) if price else None,
+                "currency": "SEK",
+                "location": "",
+                "url": item.get("ItemUrl", ""),
+                "images": images,
+                "condition": None,
+                "seller_name": item.get("SellerAlias", ""),
+                "seller_rating": (
+                    float(item["SellerDsrAverage"]) if item.get("SellerDsrAverage") else None
+                ),
+                "end_date": item.get("EndDate"),
+                "source": "tradera",
+                "item_type": item.get("ItemType"),
+            }
+        )
     return results
 
 
@@ -284,9 +276,7 @@ async def get_tradera_item(item_id: str) -> dict[str, Any]:
             },
         )
         if resp.status_code >= 400:
-            raise HttpClientError(
-                f"{TRADERA_API}/publicservice.asmx/GetItem", resp.status_code
-            )
+            raise HttpClientError(f"{TRADERA_API}/publicservice.asmx/GetItem", resp.status_code)
 
     parsed = _parse_xml_to_dict(resp.text)
     item = parsed if parsed else {}
@@ -307,9 +297,7 @@ async def get_tradera_item(item_id: str) -> dict[str, Any]:
         image_list = []
 
     images = [
-        link.get("Url", "")
-        for link in image_list
-        if isinstance(link, dict) and link.get("Url")
+        link.get("Url", "") for link in image_list if isinstance(link, dict) and link.get("Url")
     ]
 
     seller = item.get("Seller", {})
@@ -332,9 +320,7 @@ async def get_tradera_item(item_id: str) -> dict[str, Any]:
         "images": images,
         "condition": None,
         "seller_name": seller.get("Alias", ""),
-        "seller_rating": (
-            float(seller["TotalRating"]) if seller.get("TotalRating") else None
-        ),
+        "seller_rating": (float(seller["TotalRating"]) if seller.get("TotalRating") else None),
         "end_date": item.get("EndDate"),
         "source": "tradera",
         "item_type": item.get("ItemType"),

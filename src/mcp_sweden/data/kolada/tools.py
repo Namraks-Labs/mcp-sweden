@@ -119,11 +119,13 @@ async def search_municipalities(
             mtype = "region"
         else:
             mtype = raw_type
-        results.append({
-            "id": m.get("id", ""),
-            "title": m.get("title", ""),
-            "type": mtype,
-        })
+        results.append(
+            {
+                "id": m.get("id", ""),
+                "title": m.get("title", ""),
+                "type": mtype,
+            }
+        )
 
     return json.dumps(
         {"count": len(results), "municipalities": results},
@@ -206,12 +208,14 @@ async def compare_municipalities(
     for period_data in values:
         period = period_data.get("period", "")
         for v in period_data.get("values", []):
-            results.append({
-                "period": period,
-                "municipality": v.get("municipality", ""),
-                "value": v.get("value"),
-                "gender": v.get("gender", "T"),
-            })
+            results.append(
+                {
+                    "period": period,
+                    "municipality": v.get("municipality", ""),
+                    "value": v.get("value"),
+                    "gender": v.get("gender", "T"),
+                }
+            )
 
     return json.dumps(
         {"kpi": kpi_id, "comparison": results},
