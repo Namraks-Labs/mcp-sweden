@@ -15,6 +15,7 @@ Inspired by [mcp-brasil](https://github.com/jxnxts/mcp-brasil) — uses the same
 | Medium | `sverigesradio` | Channels, programs, episodes, news, traffic | [api.sr.se](https://sverigesradio.se/oppetapi) | A-35 |
 | Medium | `avanza` | Stock quotes, funds, market data, charts | [avanza.se](https://www.avanza.se) | A-36 |
 | Medium | `bolagsverket` | Company search, registration, annual reports | [bolagsverket.se](https://bolagsverket.se) | A-39 |
+| Medium | `sl` | Stockholm public transport — stations, departures, lines | [transport.integration.sl.se](https://transport.integration.sl.se/v1) | A-43 |
 | Low | `begagnad` | Second-hand marketplace listings, prices | — | A-37 |
 | Low | `solar` | Solar energy production, irradiance data | — | A-38 |
 
