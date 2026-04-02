@@ -21,58 +21,119 @@ Inspired by [mcp-brasil](https://github.com/jxnxts/mcp-brasil) — uses the same
 
 ## Installation
 
+### Option 1: `uvx` (recommended — no install needed)
+
+If you have [uv](https://docs.astral.sh/uv/) installed:
+
 ```bash
-# From source
+uvx mcp-sweden
+```
+
+That's it. No virtual environment, no pip, no Python version management.
+
+### Option 2: `pip`
+
+```bash
+pip install mcp-sweden
+```
+
+### Option 3: Smithery marketplace
+
+```bash
+npx -y @smithery/cli install mcp-sweden --client claude
+```
+
+### Option 4: From source
+
+```bash
+git clone https://github.com/Namraks-Labs/mcp-sweden.git
+cd mcp-sweden
 pip install -e .
-
-# With LLM-powered tool discovery
-pip install -e ".[llm]"
-
-# Development
-pip install -e ".[dev]"
 ```
 
-## Usage
+## Setup
 
-### stdio (local, for Claude Desktop / Claude Code)
+### Claude Code
 
 ```bash
-fastmcp run mcp_sweden.server:mcp
+claude mcp add mcp-sweden -- uvx mcp-sweden
 ```
 
-### HTTP (remote, for shared access)
+### Claude Desktop
+
+Add to `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows):
+
+```json
+{
+  "mcpServers": {
+    "mcp-sweden": {
+      "command": "uvx",
+      "args": ["mcp-sweden"]
+    }
+  }
+}
+```
+
+### Remote server (HTTP transport)
+
+For shared access or hosted deployment:
 
 ```bash
-fastmcp run mcp_sweden.server:mcp --transport http --port 8000
+uvx mcp-sweden --transport http --port 8000
 ```
 
-### Docker
+Or with Docker:
 
 ```bash
 docker build -t mcp-sweden .
 docker run -p 8000:8000 mcp-sweden
 ```
 
-### Claude Desktop config
+## Hosting your own instance
 
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+For users on claude.ai or teams that want a shared server, deploy with any container host:
 
-```json
-{
-  "mcpServers": {
-    "mcp-sweden": {
-      "command": "fastmcp",
-      "args": ["run", "mcp_sweden.server:mcp"]
-    }
-  }
-}
+### Railway
+
+1. Fork this repo
+2. Connect it to [Railway](https://railway.app)
+3. Railway auto-detects the `Dockerfile` and deploys
+4. Set port to `8000` in the service settings
+5. Use the generated URL as your MCP endpoint
+
+Railway's Hobby plan ($5/month with $5 usage credits) works well for low-traffic servers.
+
+### Render
+
+1. Fork this repo
+2. Create a new **Web Service** on [Render](https://render.com)
+3. Point it to your fork — Render detects the `Dockerfile`
+4. Set the port to `8000`
+
+Render has a free tier for web services (with cold starts after inactivity).
+
+### Fly.io
+
+```bash
+fly launch --dockerfile Dockerfile
+fly deploy
 ```
+
+### Any Docker host
+
+```bash
+docker build -t mcp-sweden .
+docker run -p 8000:8000 -e MCP_SWEDEN_API_TOKEN=your-secret mcp-sweden
+```
+
+Set `MCP_SWEDEN_API_TOKEN` to require a Bearer token for authentication.
 
 ## Architecture
 
 ```
 src/mcp_sweden/
 ├── __init__.py          # Package version
+├── __main__.py          # Entry point for `python -m mcp_sweden` and `uvx`
 ├── server.py            # Root server — auto-discovers and mounts features
 ├── settings.py          # Configuration via environment variables
 ├── exceptions.py        # Shared exception hierarchy
@@ -94,6 +155,7 @@ src/mcp_sweden/
     ├── sverigesradio/
     ├── avanza/
     ├── bolagsverket/
+    ├── sl/
     ├── begagnad/
     └── solar/
 ```

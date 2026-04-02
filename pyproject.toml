@@ -49,6 +49,9 @@ dev = [
     "mypy>=1.13",
 ]
 
+[project.scripts]
+mcp-sweden = "mcp_sweden.server:mcp.run"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
