@@ -11,4 +11,4 @@ EXPOSE 8000
 
 WORKDIR /app
 
-CMD ["python", "-c", "from mcp_sweden.server import mcp; mcp.run(transport='http', port=8000)"]
+CMD ["python", "-c", "from mcp_sweden.server import mcp; mcp.run(transport='http', host='0.0.0.0', port=8000)"]
