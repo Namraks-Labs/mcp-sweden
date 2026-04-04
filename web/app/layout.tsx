@@ -16,6 +16,9 @@ export const metadata: Metadata = {
   title: "mcp-sweden — Swedish Open Data for AI",
   description:
     "MCP server connecting AI assistants to Swedish government, statistics, media, finance, and public service data through the Model Context Protocol.",
+  icons: {
+    icon: "data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇸🇪</text></svg>",
+  },
 };
 
 export default function RootLayout({
