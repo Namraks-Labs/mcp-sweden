@@ -53,9 +53,35 @@ docker build -t mcp-sweden .
 docker run -p 8000:8000 mcp-sweden
 ```
 
-### Claude Desktop config
+### Hosted (Railway)
 
-Add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+A hosted instance is available at:
+
+```
+https://mcp-sweden-production.up.railway.app/mcp
+```
+
+Connect to it from Claude Code:
+
+```bash
+claude mcp add mcp-sweden --transport http https://mcp-sweden-production.up.railway.app/mcp
+```
+
+Or add to Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "mcp-sweden": {
+      "url": "https://mcp-sweden-production.up.railway.app/mcp"
+    }
+  }
+}
+```
+
+### Claude Desktop config (local)
+
+For running locally, add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 ```json
 {
