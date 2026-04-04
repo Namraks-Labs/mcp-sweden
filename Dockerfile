@@ -9,5 +9,6 @@ RUN pip install --no-cache-dir .
 
 EXPOSE 8000
 
-WORKDIR /app/src
-CMD ["fastmcp", "run", "mcp_sweden/server.py:mcp", "--transport", "http", "--port", "8000"]
+WORKDIR /app
+
+CMD ["python", "-c", "from mcp_sweden.server import mcp; mcp.run(transport='http', port=8000)"]
