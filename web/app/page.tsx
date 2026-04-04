@@ -1,3 +1,7 @@
+"use client";
+
+import { useState } from "react";
+
 const features = [
   {
     emoji: "🏛️",
@@ -133,48 +137,156 @@ const features = [
   },
 ];
 
-export default function Home() {
-  const totalTools = features.reduce((sum, f) => sum + f.tools.length, 0);
+function CopyButton({ text, label }: { text: string; label: string }) {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(text);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
 
   return (
-    <div className="min-h-screen">
+    <button
+      onClick={handleCopy}
+      className="shrink-0 rounded-md border border-gray-300 bg-gray-50 px-3 py-1.5 text-xs font-medium text-gray-700 transition hover:bg-gray-100"
+    >
+      {copied ? "Copied!" : label}
+    </button>
+  );
+}
+
+export default function Home() {
+  const totalTools = features.reduce((sum, f) => sum + f.tools.length, 0);
+  const [activeTab, setActiveTab] = useState<"claude-code" | "claude-desktop">(
+    "claude-code"
+  );
+
+  const claudeCodeCommand =
+    "claude mcp add mcp-sweden --transport http https://sweden.mcp.namraks.com/mcp";
+
+  const claudeDesktopConfig = `{
+  "mcpServers": {
+    "mcp-sweden": {
+      "type": "http",
+      "url": "https://sweden.mcp.namraks.com/mcp"
+    }
+  }
+}`;
+
+  return (
+    <div className="min-h-screen bg-white">
       {/* Hero */}
-      <header className="relative overflow-hidden px-6 py-24 text-center">
-        <div className="absolute inset-0 bg-gradient-to-b from-[#006aa7]/20 to-transparent" />
-        <div className="relative mx-auto max-w-3xl">
-          <h1 className="mb-2 text-6xl font-bold tracking-tight">
+      <header className="px-6 py-20 text-center">
+        <div className="mx-auto max-w-3xl">
+          <h1 className="mb-3 text-5xl font-bold tracking-tight text-gray-900">
             mcp-sweden{" "}
-            <span className="inline-block animate-pulse">🇸🇪</span>
+            <span className="inline-block">🇸🇪</span>
           </h1>
-          <p className="mb-6 text-xl text-blue-200">
+          <p className="mb-4 text-xl text-gray-600">
             Swedish open data for AI assistants
           </p>
-          <p className="mb-10 text-lg text-blue-300/80">
+          <p className="mx-auto mb-10 max-w-2xl text-base text-gray-500">
+            An MCP server that connects AI assistants like Claude to Swedish
+            government data, statistics, public transport, financial markets, and
+            more — all through the{" "}
+            <a
+              href="https://modelcontextprotocol.io"
+              className="text-blue-600 underline hover:text-blue-800"
+            >
+              Model Context Protocol
+            </a>
+            .
+          </p>
+          <p className="mb-10 text-sm font-medium text-gray-400">
             {features.length} data sources &middot; {totalTools} tools &middot;
             One MCP server
           </p>
 
           {/* Connect box */}
-          <div className="mx-auto max-w-2xl rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur">
-            <p className="mb-3 text-sm font-medium uppercase tracking-wider text-blue-300">
-              Connect now
+          <div className="mx-auto max-w-2xl rounded-xl border border-gray-200 bg-white p-6 shadow-sm">
+            <p className="mb-4 text-sm font-semibold uppercase tracking-wider text-gray-500">
+              Get started
             </p>
-            <code className="block rounded-lg bg-black/40 px-4 py-3 text-sm text-[#FECC00] font-mono">
-              claude mcp add mcp-sweden --transport http
-              https://sweden.mcp.namraks.com/mcp
-            </code>
-            <div className="mt-4 flex flex-wrap justify-center gap-3">
+
+            {/* Tabs */}
+            <div className="mb-4 flex justify-center gap-1 rounded-lg bg-gray-100 p-1">
+              <button
+                onClick={() => setActiveTab("claude-code")}
+                className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+                  activeTab === "claude-code"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Claude Code
+              </button>
+              <button
+                onClick={() => setActiveTab("claude-desktop")}
+                className={`rounded-md px-4 py-2 text-sm font-medium transition ${
+                  activeTab === "claude-desktop"
+                    ? "bg-white text-gray-900 shadow-sm"
+                    : "text-gray-500 hover:text-gray-700"
+                }`}
+              >
+                Claude Desktop
+              </button>
+            </div>
+
+            {activeTab === "claude-code" ? (
+              <div>
+                <p className="mb-3 text-sm text-gray-500">
+                  Run this command in your terminal:
+                </p>
+                <div className="flex items-center gap-2 rounded-lg border border-gray-200 bg-gray-50 px-4 py-3">
+                  <code className="flex-1 overflow-x-auto text-sm text-gray-800 font-mono">
+                    {claudeCodeCommand}
+                  </code>
+                  <CopyButton text={claudeCodeCommand} label="Copy" />
+                </div>
+              </div>
+            ) : (
+              <div>
+                <p className="mb-3 text-sm text-gray-500">
+                  Add this to your Claude Desktop config file (
+                  <code className="rounded bg-gray-100 px-1.5 py-0.5 text-xs font-mono">
+                    claude_desktop_config.json
+                  </code>
+                  ):
+                </p>
+                <div className="relative rounded-lg border border-gray-200 bg-gray-50 p-4">
+                  <pre className="overflow-x-auto text-sm text-gray-800 font-mono">
+                    {claudeDesktopConfig}
+                  </pre>
+                  <div className="absolute right-3 top-3">
+                    <CopyButton text={claudeDesktopConfig} label="Copy" />
+                  </div>
+                </div>
+                <p className="mt-3 text-xs text-gray-400">
+                  Config file location: macOS{" "}
+                  <code className="rounded bg-gray-100 px-1 py-0.5 font-mono">
+                    ~/Library/Application Support/Claude/claude_desktop_config.json
+                  </code>
+                  {" "}&middot; Windows{" "}
+                  <code className="rounded bg-gray-100 px-1 py-0.5 font-mono">
+                    %APPDATA%\Claude\claude_desktop_config.json
+                  </code>
+                </p>
+              </div>
+            )}
+
+            <div className="mt-5 flex flex-wrap justify-center gap-3">
               <a
                 href="https://github.com/Namraks-Labs/mcp-sweden"
-                className="rounded-full bg-white/10 px-5 py-2 text-sm font-medium transition hover:bg-white/20"
+                className="rounded-full border border-gray-200 bg-white px-5 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
               >
                 GitHub
               </a>
               <a
                 href="https://github.com/Namraks-Labs/mcp-sweden#installation"
-                className="rounded-full bg-[#FECC00] px-5 py-2 text-sm font-medium text-[#001845] transition hover:bg-[#ffd633]"
+                className="rounded-full bg-[#006aa7] px-5 py-2 text-sm font-medium text-white transition hover:bg-[#005a8e]"
               >
-                Install locally
+                Run locally
               </a>
             </div>
           </div>
@@ -187,16 +299,20 @@ export default function Home() {
           {features.map((feature) => (
             <div
               key={feature.name}
-              className="group rounded-xl border border-white/10 bg-white/5 p-6 transition hover:border-[#FECC00]/30 hover:bg-white/[0.07]"
+              className="group rounded-xl border border-gray-200 bg-white p-6 transition hover:border-[#006aa7]/30 hover:shadow-md"
             >
               <div className="mb-4 flex items-center gap-3">
                 <span className="text-3xl">{feature.emoji}</span>
                 <div>
-                  <h2 className="text-xl font-bold">{feature.name}</h2>
-                  <p className="text-sm text-blue-300">{feature.description}</p>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    {feature.name}
+                  </h2>
+                  <p className="text-sm text-gray-500">
+                    {feature.description}
+                  </p>
                 </div>
               </div>
-              <p className="mb-3 font-mono text-xs text-blue-400">
+              <p className="mb-3 font-mono text-xs text-gray-400">
                 {feature.api}
               </p>
               <ul className="space-y-1.5">
@@ -204,10 +320,10 @@ export default function Home() {
                   const [name, desc] = tool.split(" — ");
                   return (
                     <li key={name} className="flex text-sm">
-                      <code className="mr-2 shrink-0 text-[#FECC00]/80">
+                      <code className="mr-2 shrink-0 text-[#006aa7] font-mono">
                         {name}
                       </code>
-                      <span className="text-blue-200/60">{desc}</span>
+                      <span className="text-gray-500">{desc}</span>
                     </li>
                   );
                 })}
@@ -218,19 +334,19 @@ export default function Home() {
       </main>
 
       {/* Footer */}
-      <footer className="border-t border-white/10 px-6 py-8 text-center text-sm text-blue-300/50">
+      <footer className="border-t border-gray-200 px-6 py-8 text-center text-sm text-gray-400">
         <p>
           Built by{" "}
           <a
             href="https://github.com/Namraks-Labs"
-            className="underline hover:text-blue-200"
+            className="underline hover:text-gray-600"
           >
             Namraks Labs
           </a>{" "}
           &middot; Open source under MIT &middot; Powered by{" "}
           <a
             href="https://modelcontextprotocol.io"
-            className="underline hover:text-blue-200"
+            className="underline hover:text-gray-600"
           >
             MCP
           </a>
