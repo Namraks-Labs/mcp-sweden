@@ -1,87 +1,70 @@
-# mcp-sweden 🇸🇪
+# mcp-sweden
 
-MCP server for Swedish open data APIs. Connects AI assistants to Swedish government, statistics, media, finance, and public service data through the [Model Context Protocol](https://modelcontextprotocol.io/).
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.10+](https://img.shields.io/badge/Python-3.10%2B-blue.svg)](https://python.org)
+[![MCP](https://img.shields.io/badge/MCP-Compatible-green.svg)](https://modelcontextprotocol.io/)
 
-Inspired by [mcp-brasil](https://github.com/jxnxts/mcp-brasil) — uses the same convention-based auto-discovery architecture.
+A production-ready [Model Context Protocol](https://modelcontextprotocol.io/) server for Swedish open data. Connect any MCP-compatible AI assistant to 10 Swedish government, statistics, media, finance, and public service APIs through **57 tools** — no API keys required.
 
-## Data Sources
+**[sweden.mcp.namraks.com](https://sweden.mcp.namraks.com)** | Built by [Namraks Labs](https://github.com/Namraks-Labs)
 
-| Priority | Feature | Description | API | Issue |
-|---|---|---|---|---|
-| High | `riksdag` | Parliament members, votes, documents, debates | [data.riksdagen.se](https://data.riksdagen.se) | A-31 |
-| High | `scb` | Population, economy, labor, trade statistics | [api.scb.se](https://api.scb.se) | A-34 |
-| Medium | `kolada` | Municipality & region KPIs and comparisons | [api.kolada.se](https://api.kolada.se) | A-32 |
-| Medium | `skolverket` | School statistics, grades, curricula | [skolverket.se](https://www.skolverket.se) | A-33 |
-| Medium | `sverigesradio` | Channels, programs, episodes, news, traffic | [api.sr.se](https://sverigesradio.se/oppetapi) | A-35 |
-| Medium | `avanza` | Stock quotes, funds, market data, charts | [avanza.se](https://www.avanza.se) | A-36 |
-| Medium | `bolagsverket` | Company search, registration, annual reports | [bolagsverket.se](https://bolagsverket.se) | A-39 |
-| Medium | `sl` | Stockholm public transport — stations, departures, lines | [transport.integration.sl.se](https://transport.integration.sl.se/v1) | A-43 |
-| Low | `begagnad` | Second-hand marketplace listings, prices | — | A-37 |
-| Low | `solar` | Solar energy production, irradiance data | — | A-38 |
+## Features
 
-## Installation
+| Data Source | Description | Tools | API |
+|---|---|---|---|
+| **riksdag** | Parliament members, votes, documents, debates | 5 | [data.riksdagen.se](https://data.riksdagen.se) |
+| **scb** | Population, economy, labor, trade, environment statistics | 5 | [api.scb.se](https://api.scb.se) |
+| **kolada** | Municipality & region KPIs, comparisons, rankings | 6 | [api.kolada.se](https://api.kolada.se) |
+| **skolverket** | School registry, statistics, grades, teacher data | 7 | [api.skolverket.se](https://api.skolverket.se) |
+| **sverigesradio** | Channels, programs, episodes, playlists, news, traffic | 9 | [api.sr.se](https://sverigesradio.se/oppetapi) |
+| **avanza** | Stock quotes, funds, market data, orderbook, charts | 6 | [avanza.se](https://www.avanza.se) |
+| **bolagsverket** | Company search, registration data, annual reports | 4 | [bolagsverket.se](https://bolagsverket.se) |
+| **sl** | Stockholm public transport — stations, real-time departures, lines | 5 | [transport.integration.sl.se](https://transport.integration.sl.se/v1) |
+| **begagnad** | Search Swedish second-hand marketplaces (Blocket, Tradera) | 5 | Web scraping |
+| **solar** | Solar energy production, irradiance, installations | 5 | [SMHI Open Data](https://opendata-download-metfcst.smhi.se) |
 
-```bash
-# From source
-pip install -e .
+All data sources are free and require no authentication.
 
-# With LLM-powered tool discovery
-pip install -e ".[llm]"
+## Quick Start
 
-# Development
-pip install -e ".[dev]"
-```
+### Use the hosted instance (recommended)
 
-## Usage
+A public instance is running at **[sweden.mcp.namraks.com](https://sweden.mcp.namraks.com)**. No setup required:
 
-### stdio (local, for Claude Desktop / Claude Code)
+**Claude Code:**
 
 ```bash
-fastmcp run mcp_sweden.server:mcp
+claude mcp add mcp-sweden --transport http https://sweden.mcp.namraks.com/mcp
 ```
 
-### HTTP (remote, for shared access)
-
-```bash
-fastmcp run mcp_sweden.server:mcp --transport http --port 8000
-```
-
-### Docker
-
-```bash
-docker build -t mcp-sweden .
-docker run -p 8000:8000 mcp-sweden
-```
-
-### Hosted (Railway)
-
-A hosted instance is available at:
-
-```
-https://mcp-sweden-production.up.railway.app/mcp
-```
-
-Connect to it from Claude Code:
-
-```bash
-claude mcp add mcp-sweden --transport http https://mcp-sweden-production.up.railway.app/mcp
-```
-
-Or add to Claude Desktop config (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
 
 ```json
 {
   "mcpServers": {
     "mcp-sweden": {
-      "url": "https://mcp-sweden-production.up.railway.app/mcp"
+      "url": "https://sweden.mcp.namraks.com/mcp"
     }
   }
 }
 ```
 
-### Claude Desktop config (local)
+### Run locally
 
-For running locally, add to `~/Library/Application Support/Claude/claude_desktop_config.json`:
+```bash
+# Clone and install
+git clone https://github.com/Namraks-Labs/mcp-sweden.git
+cd mcp-sweden
+pip install -e .
+
+# Start via stdio (for Claude Desktop / Claude Code)
+fastmcp run mcp_sweden.server:mcp
+
+# Or start via HTTP
+fastmcp run mcp_sweden.server:mcp --transport http --port 8000
+```
+
+**Claude Desktop config (local stdio):**
 
 ```json
 {
@@ -94,19 +77,22 @@ For running locally, add to `~/Library/Application Support/Claude/claude_desktop
 }
 ```
 
+### Docker
+
+```bash
+docker build -t mcp-sweden .
+docker run -p 8000:8000 mcp-sweden
+```
+
 ## Architecture
+
+The server uses a convention-based auto-discovery architecture inspired by [mcp-brasil](https://github.com/jxnxts/mcp-brasil). Each data source is a self-contained subpackage that is automatically detected and mounted at startup.
 
 ```
 src/mcp_sweden/
-├── __init__.py          # Package version
 ├── server.py            # Root server — auto-discovers and mounts features
 ├── settings.py          # Configuration via environment variables
-├── exceptions.py        # Shared exception hierarchy
-├── _shared/             # Shared utilities
-│   ├── feature.py       # FeatureMeta + FeatureRegistry (auto-discovery)
-│   ├── http_client.py   # Async HTTP with retry + backoff
-│   ├── cache.py         # TTL cache for API responses
-│   └── rate_limiter.py  # Token-bucket rate limiter
+├── _shared/             # Shared utilities (HTTP client, cache, rate limiter)
 └── data/                # Feature subpackages (auto-discovered)
     ├── riksdag/         # Each feature has:
     │   ├── __init__.py  #   FEATURE_META declaration
@@ -120,26 +106,12 @@ src/mcp_sweden/
     ├── sverigesradio/
     ├── avanza/
     ├── bolagsverket/
+    ├── sl/
     ├── begagnad/
     └── solar/
 ```
 
-### How auto-discovery works
-
-1. `FeatureRegistry.discover("mcp_sweden.data")` scans all subpackages
-2. Each subpackage must export `FEATURE_META` (a `FeatureMeta` instance) in `__init__.py`
-3. Each subpackage must have a `server.py` that exports an `mcp` FastMCP object
-4. Features are automatically mounted with namespace prefixes (e.g., `riksdag_search_documents`)
-5. Zero config needed to add a new feature — just create the directory and follow the convention
-
-### Adding a new feature
-
-1. Create `src/mcp_sweden/data/<name>/`
-2. Add `__init__.py` with `FEATURE_META`
-3. Add `server.py` with `mcp = FastMCP("mcp-sweden-<name>")`
-4. Implement tools in `tools.py`, HTTP calls in `client.py`
-5. Register tools in `server.py`
-6. Done — the registry auto-discovers it on next start
+Adding a new data source is as simple as creating a new subpackage following the convention — the registry discovers it automatically on startup.
 
 ## Configuration
 
@@ -151,7 +123,6 @@ src/mcp_sweden/
 | `MCP_SWEDEN_USER_AGENT` | `mcp-sweden/0.1.0` | HTTP User-Agent header |
 | `MCP_SWEDEN_TOOL_SEARCH` | `bm25` | Tool discovery mode: `bm25` or `none` |
 | `MCP_SWEDEN_API_TOKEN` | — | Bearer token for HTTP transport auth |
-| `ANTHROPIC_API_KEY` | — | For LLM-powered tool recommendations |
 
 ## Development
 
@@ -162,7 +133,7 @@ pip install -e ".[dev]"
 # Run tests
 pytest
 
-# Lint
+# Lint & format
 ruff check src/
 ruff format src/
 
@@ -170,6 +141,18 @@ ruff format src/
 mypy src/
 ```
 
+## Contributing
+
+Contributions are welcome! To add a new Swedish data source:
+
+1. Create a subpackage under `src/mcp_sweden/data/<name>/`
+2. Define `FEATURE_META` in `__init__.py`
+3. Implement tools in `tools.py` and register them in `server.py`
+4. Add Pydantic schemas in `schemas.py` and HTTP calls in `client.py`
+5. Submit a pull request
+
+See the existing data sources for reference.
+
 ## License
 
-MIT
+[MIT](LICENSE) — Copyright (c) 2026 Namraks Labs
