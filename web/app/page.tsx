@@ -161,7 +161,7 @@ export default function Home() {
             </p>
             <code className="block rounded-lg bg-black/40 px-4 py-3 text-sm text-[#FECC00] font-mono">
               claude mcp add mcp-sweden --transport http
-              https://mcp-sweden-production.up.railway.app/mcp
+              https://sweden.mcp.namraks.com/mcp
             </code>
             <div className="mt-4 flex flex-wrap justify-center gap-3">
               <a
